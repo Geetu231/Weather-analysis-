@@ -1,0 +1,160 @@
+// Retrofit dependencies in build.gradle
+implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+// WeatherService interface
+public interface WeatherService {
+    @GET("weather")
+    Call<WeatherResponse> getWeather(@Query("q") String city,
+                                     @Query("appid") String apiKey);
+}
+
+// WeatherResponse model class
+public class WeatherResponse {
+    private Main main;
+    private List<Weather> weather;
+
+    public Main getMain() {
+        return main;
+    }
+
+    public List<Weather> getWeather() {
+        return weather;
+    }
+}
+
+// MainActivity.java
+public class MainActivity extends AppCompatActivity {
+    private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/";
+    private static final String API_KEY = "your_api_key_here";
+    private WeatherService weatherService;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        weatherService = retrofit.create(WeatherService.class);
+
+        getWeatherData("London"); // Example: Fetch weather for London
+    }
+
+    private void getWeatherData(String city) {
+        Call<WeatherResponse> call = weatherService.getWeather(city, API_KEY);
+        call.enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    WeatherResponse weatherResponse = response.body();
+                    Main main = weatherResponse.getMain();
+                    List<Weather> weatherList = weatherResponse.getWeather();
+
+                    // Handle weather data here
+                    double temperature = main.getTemp();
+                    String description = weatherList.get(0).getDescription();
+
+                    // Update UI with weather information
+                    TextView temperatureTextView = findViewById(R.id.temperatureTextView);
+                    TextView descriptionTextView = findViewById(R.id.descriptionTextView);
+
+                    temperatureTextView.setText(String.format(Locale.getDefault(), "%.1f°C", temperature));
+                    descriptionTextView.setText(description);
+                } else {
+                    // Handle error
+                    Log.e("WeatherApp", "Failed to fetch weather data");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                // Handle failure
+                Log.e("WeatherApp", "Error fetching weather data", t);
+            }
+        });
+    }
+}
+// Retrofit dependencies in build.gradle
+implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+// WeatherService interface
+public interface WeatherService {
+    @GET("weather")
+    Call<WeatherResponse> getWeather(@Query("q") String city,
+                                     @Query("appid") String apiKey);
+}
+
+// WeatherResponse model class
+public class WeatherResponse {
+    private Main main;
+    private List<Weather> weather;
+
+    public Main getMain() {
+        return main;
+    }
+
+    public List<Weather> getWeather() {
+        return weather;
+    }
+}
+
+// MainActivity.java
+public class MainActivity extends AppCompatActivity {
+    private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/";
+    private static final String API_KEY = "your_api_key_here";
+    private WeatherService weatherService;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        weatherService = retrofit.create(WeatherService.class);
+
+        getWeatherData("London"); // Example: Fetch weather for London
+    }
+
+    private void getWeatherData(String city) {
+        Call<WeatherResponse> call = weatherService.getWeather(city, API_KEY);
+        call.enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    WeatherResponse weatherResponse = response.body();
+                    Main main = weatherResponse.getMain();
+                    List<Weather> weatherList = weatherResponse.getWeather();
+
+                    // Handle weather data here
+                    double temperature = main.getTemp();
+                    String description = weatherList.get(0).getDescription();
+
+                    // Update UI with weather information
+                    TextView temperatureTextView = findViewById(R.id.temperatureTextView);
+                    TextView descriptionTextView = findViewById(R.id.descriptionTextView);
+
+                    temperatureTextView.setText(String.format(Locale.getDefault(), "%.1f°C", temperature));
+                    descriptionTextView.setText(description);
+                } else {
+                    // Handle error
+                    Log.e("WeatherApp", "Failed to fetch weather data");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                // Handle failure
+                Log.e("WeatherApp", "Error fetching weather data", t);
+            }
+        });
+    }
+}
